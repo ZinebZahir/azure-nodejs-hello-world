@@ -29,10 +29,15 @@ steps:
 
 # Step 4: Copy Files to Artifact Staging Directory
 - script: |
-    if exist $(Build.ArtifactStagingDirectory) rmdir /S /Q $(Build.ArtifactStagingDirectory)
     mkdir $(Build.ArtifactStagingDirectory)
-    xcopy /E /I /Y dist\* $(Build.ArtifactStagingDirectory)\
+    xcopy dist $(Build.ArtifactStagingDirectory) /E /I /Y
   displayName: 'Copy Files to Artifact Staging Directory'
+
+# Step 5: Optional - Debugging Step
+- script: |
+    dir $(Build.ArtifactStagingDirectory)
+  displayName: 'Check Files in Artifact Staging Directory'
+
 
 
 # Step 6: Publish Build Artifacts
