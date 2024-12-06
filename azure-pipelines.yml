@@ -16,8 +16,7 @@ steps:
     npm install
   displayName: 'Install Dependencies'
 
-
-# Step 3: Run tests
+# Step 3: Run Tests
 - script: |
     npm test
   displayName: 'Run Tests'
@@ -27,20 +26,23 @@ steps:
     npm run build
   displayName: 'Build the Application'
 
-# Step 4: Copy Files to Artifact Staging Directory
+# Step 5: Copy Files to Artifact Staging Directory
 - script: |
-    mkdir $(Build.ArtifactStagingDirectory)
-    xcopy dist $(Build.ArtifactStagingDirectory) /E /I /Y
+    if not exist "$(Build.ArtifactStagingDirectory)" mkdir "$(Build.ArtifactStagingDirectory)"
+    if exist dist (
+        xcopy dist "$(Build.ArtifactStagingDirectory)" /E /I /Y
+    ) else (
+        echo "Error: The 'dist' directory does not exist. Check the build step."
+        exit 1
+    )
   displayName: 'Copy Files to Artifact Staging Directory'
 
-# Step 5: Optional - Debugging Step
+# Step 6: Optional - Debugging Step
 - script: |
-    dir $(Build.ArtifactStagingDirectory)
+    dir "$(Build.ArtifactStagingDirectory)"
   displayName: 'Check Files in Artifact Staging Directory'
 
-
-
-# Step 6: Publish Build Artifacts
+# Step 7: Publish Build Artifacts
 - task: PublishBuildArtifacts@1
   inputs:
     pathToPublish: '$(Build.ArtifactStagingDirectory)' # Path where files are staged
