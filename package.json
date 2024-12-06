@@ -8,6 +8,7 @@
     "scripts": {
         "start": "node index.js",
         "test": "echo \"No tests available\"",
+         "build": "echo 'No build step required for this Node.js app.'",
         "lint": "eslint",
         "format": "prettier --single-quote --write *.js"
     },
