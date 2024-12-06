@@ -27,11 +27,13 @@ steps:
     npm run build
   displayName: 'Build the Application'
 
-# Step 5: Copy Files to Artifact Staging Directory
+# Step 4: Copy Files to Artifact Staging Directory
 - script: |
-    mkdir -p $(Build.ArtifactStagingDirectory)   # Create the staging directory if it doesn't exist
-    cp -r dist/* $(Build.ArtifactStagingDirectory) # Copy files from 'dist' folder to the staging directory
+    if exist $(Build.ArtifactStagingDirectory) rmdir /S /Q $(Build.ArtifactStagingDirectory)
+    mkdir $(Build.ArtifactStagingDirectory)
+    xcopy /E /I /Y dist\* $(Build.ArtifactStagingDirectory)\
   displayName: 'Copy Files to Artifact Staging Directory'
+
 
 # Step 6: Publish Build Artifacts
 - task: PublishBuildArtifacts@1
