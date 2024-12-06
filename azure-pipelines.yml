@@ -1,0 +1,42 @@
+trigger:
+- master
+
+pool:
+  vmImage: 'default'
+
+steps:
+# Step 1: Install Node.js
+- task: NodeTool@0
+  inputs:
+    versionSpec: '20.x'
+  displayName: 'Install Node.js'
+
+# Step 2: Install Dependencies
+- script: |
+    npm install
+  displayName: 'Install Dependencies'
+
+
+# Step 3: Run tests
+- script: |
+    npm test
+  displayName: 'Run Tests'
+
+# Step 4: Build the Application
+- script: |
+    npm run build
+  displayName: 'Build the Application'
+
+# Step 5: Copy Files to Artifact Staging Directory
+- script: |
+    mkdir -p $(Build.ArtifactStagingDirectory)   # Create the staging directory if it doesn't exist
+    cp -r dist/* $(Build.ArtifactStagingDirectory) # Copy files from 'dist' folder to the staging directory
+  displayName: 'Copy Files to Artifact Staging Directory'
+
+# Step 6: Publish Build Artifacts
+- task: PublishBuildArtifacts@1
+  inputs:
+    pathToPublish: '$(Build.ArtifactStagingDirectory)' # Path where files are staged
+    artifactName: 'drop'                               # Name of the artifact
+    publishLocation: 'Container'                      # Default storage in Azure DevOps
+  displayName: 'Publish Build Artifacts'
